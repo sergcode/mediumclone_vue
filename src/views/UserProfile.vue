@@ -1,9 +1,20 @@
 <template>
-  <div class="profile-page" v-if="userProfile">
+  <div class="profile-page">
     <div class="user-info">
       <div class="container">
         <div class="row">
-          <div class="col-xs-12 col-md-10 offset-md-1">
+          <mcv-loading
+            v-if="isLoading"
+            :class="{
+              loading__center: true,
+              'loading__font-size': true,
+              'pb-1': true
+            }"
+            :text-message="'Loading avatar and username user...'"
+            :spinner="true"
+          />
+          <mcv-error-message v-if="error" />
+          <div v-if="userProfile" class="col-xs-12 col-md-10 offset-md-1">
             <img alt="" class="user-img" :src="userProfile.image" />
             <h4>{{ userProfile.username }}</h4>
             <p>{{ userProfile.bio }}</p>
@@ -27,7 +38,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div v-if="userProfile" class="container">
       <div class="row">
         <div class="col-xs-12 col-md-10 offset-md-1">
           <div class="articles-toggle">
@@ -70,12 +81,16 @@
 import {mapState, mapGetters} from 'vuex'
 import {actionTypes as userProfileActionTypes} from '@/store/modules/userProfile'
 import {getterTypes as authGetterTypes} from '@/store/modules/auth'
+import McvLoading from '@/components/Loading'
+import McvErrorMessage from '@/components/ErrorMessage'
 import McvFeed from '@/components/Feed'
 import McvFollowUser from '@/components/FollowUser'
 
 export default {
   name: 'McvUserProfile',
   components: {
+    McvLoading,
+    McvErrorMessage,
     McvFeed,
     McvFollowUser
   },
