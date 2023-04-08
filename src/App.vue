@@ -2,17 +2,20 @@
   <div id="app">
     <mcv-topbar />
     <router-view></router-view>
+    <mcv-footer />
   </div>
 </template>
 
 <script>
-import McvTopbar from '@/components/Topbar.vue'
+import McvTopbar from '@/components/Topbar'
 import {actionTypes} from '@/store/modules/auth'
+import McvFooter from '@/components/Footer'
 
 export default {
   name: 'App',
   components: {
-    McvTopbar
+    McvTopbar,
+    McvFooter
   },
 
   /** mounted - это метод который вызывается когда у нас компонента примонтирована в DOM.
