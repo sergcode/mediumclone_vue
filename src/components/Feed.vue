@@ -1,9 +1,17 @@
 <template>
   <div>
-    <mcv-loading v-if="isLoading" />
+    <mcv-loading
+      v-if="isLoading"
+      :class="{'article-preview': true}"
+      :text-message="'Loading posts...'"
+    />
     <mcv-error-message v-if="error" />
 
     <div v-if="feed" class="article-list">
+      <mcv-articles-not
+        v-if="feed.articlesCount === 0"
+        :text-message="'No posts are here... yet.'"
+      />
       <div
         class="article-preview"
         v-for="(article, index) in feed.articles"
@@ -17,6 +25,7 @@
           </router-link>
           <div class="info">
             <router-link
+              class="author"
               :to="{
                 name: 'userProfile',
                 params: {slug: article.author.username}
@@ -24,7 +33,7 @@
             >
               {{ article.author.username }}
             </router-link>
-            <span class="date">{{ article.createdAt }}</span>
+            <span class="date">{{ dateRegister }}</span>
           </div>
           <div class="pull-xs-right">
             <mcv-add-to-favorites
@@ -64,6 +73,7 @@ import McvLoading from '@/components/Loading'
 import McvErrorMessage from '@/components/ErrorMessage'
 import McvTagList from '@/components/TagList'
 import McvAddToFavorites from '@/components/AddToFavorites'
+import McvArticlesNot from '@/components/ArticlesNot'
 
 export default {
   name: 'McvFeed',
@@ -82,7 +92,8 @@ export default {
     McvLoading,
     McvErrorMessage,
     McvTagList,
-    McvAddToFavorites
+    McvAddToFavorites,
+    McvArticlesNot
   },
   /** COMPUTED - это декларативно и мутабельно. Мы просто описываем переменные которые хотим получить, это и мутабельно по скольку мы здесь производим какие-то вычисления,
    * но мы не меняем абсолютно никакие переменные, например в currentPage() вписать какие-то this.foo = 'bar' ЗАПРЕЩЕННО!!! Потому что это computed properties оно просто вычисляет currentPage().
@@ -109,6 +120,19 @@ export default {
        * Если страница 1 умножаем на 10 статей минус 10 равно 0
        * Если страница 2 умножаем на 10 статей минус 10 равно 10
        */
+    },
+    dateRegister() {
+      let date
+      const articlesArray = this.feed.articles
+
+      articlesArray.forEach(article => {
+        date = new Date(article.createdAt).toLocaleString('en-Us', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      })
+      return date
     }
   },
   /** WATCH - это просто вещи написанные на callbacks, т.е. это полностью императивный код. Здесь просто пишется колбэк и он выполняется когда переменная поменяется.
@@ -148,3 +172,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.author {
+  padding-bottom: 3px;
+}
+</style>
