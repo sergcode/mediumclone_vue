@@ -93,3 +93,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.author {
+  padding-bottom: 3px;
+}
+</style>
